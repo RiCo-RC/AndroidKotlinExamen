@@ -155,7 +155,7 @@ fun manageOperatorInput(
     displayText: String,
     onDisplayTextChange: (String) -> Unit
 ) {
-    if (beforeOperator.isNotEmpty() && afterOperator.isNotEmpty()) {
+    if (beforeOperator.isNotEmpty() && afterOperator.isEmpty()) {
         onDisplayTextChange(beforeOperator + operator + afterOperator)
     }
     onChangeOperator(button)
