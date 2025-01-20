@@ -63,10 +63,10 @@ fun Calculator(modifier: Modifier = Modifier) {
                                     button in listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9") -> manageNumberInput(
                                         button,
                                         beforeOperator = beforeOperator,
-                                        onChangeBeforeOperator =  { newBeforeOperator -> beforeOperator = newBeforeOperator },
+                                        onChangeBeforeOperator = { newBeforeOperator -> beforeOperator = newBeforeOperator },
                                         operator = operator,
-                                        afterOperator = beforeOperator,
-                                        onChangeAfterOperator =  { newAfterOperator -> afterOperator = newAfterOperator },
+                                        afterOperator = afterOperator,
+                                        onChangeAfterOperator = { newAfterOperator -> afterOperator = newAfterOperator },
                                         displayText = displayText,
                                         onDisplayTextChange = { newDisplayText -> displayText = newDisplayText }
                                     )
@@ -74,27 +74,24 @@ fun Calculator(modifier: Modifier = Modifier) {
                                         button,
                                         beforeOperator = beforeOperator,
                                         operator = operator,
-                                        onChangeOperator =  { newOperator -> operator = newOperator },
-                                        afterOperator = beforeOperator,
+                                        onChangeOperator = { newOperator -> operator = newOperator },
+                                        afterOperator = afterOperator,
                                         displayText = displayText,
                                         onDisplayTextChange = { newDisplayText -> displayText = newDisplayText }
                                     )
                                     button == "=" -> manageEqualInput(
-                                        button,
                                         beforeOperator = beforeOperator,
                                         operator = operator,
-                                        afterOperator = beforeOperator,
-                                        displayText = displayText,
+                                        afterOperator = afterOperator,
                                         onDisplayTextChange = { newDisplayText -> displayText = newDisplayText }
                                     )
                                     button == "C" -> manageClear(
-                                        button,
                                         beforeOperator = beforeOperator,
-                                        onChangeBeforeOperator =  { newBeforeOperator -> beforeOperator = newBeforeOperator },
+                                        onChangeBeforeOperator = { newBeforeOperator -> beforeOperator = newBeforeOperator },
                                         operator = operator,
-                                        onChangeOperator =  { newOperator -> operator = newOperator },
-                                        afterOperator = beforeOperator,
-                                        onChangeAfterOperator =  { newAfterOperator -> afterOperator = newAfterOperator },
+                                        onChangeOperator = { newOperator -> operator = newOperator },
+                                        afterOperator = afterOperator,
+                                        onChangeAfterOperator = { newAfterOperator -> afterOperator = newAfterOperator },
                                         displayText = displayText,
                                         onDisplayTextChange = { newDisplayText -> displayText = newDisplayText }
                                     )
@@ -144,8 +141,8 @@ fun manageNumberInput(
     displayText: String,
     onDisplayTextChange: (String) -> Unit
 ) {
-    onChangeBeforeOperator(if (beforeOperator.isEmpty()) button else "")
-    onChangeAfterOperator(if (afterOperator.isEmpty() && operator.isNotEmpty()) button else "")
+    if (beforeOperator.isEmpty()) { onChangeBeforeOperator(beforeOperator + button) }
+    if (beforeOperator.isNotEmpty()) { onChangeAfterOperator(afterOperator + button) }
     onDisplayTextChange(beforeOperator + operator + afterOperator)
 }
 
@@ -158,29 +155,30 @@ fun manageOperatorInput(
     displayText: String,
     onDisplayTextChange: (String) -> Unit
 ) {
+    if (beforeOperator.isNotEmpty() && afterOperator.isNotEmpty()) {
+        onDisplayTextChange(beforeOperator + operator + afterOperator)
+    }
     onChangeOperator(button)
-    onDisplayTextChange(beforeOperator + operator + afterOperator)
 }
 
 fun manageEqualInput(
-    button: String,
     beforeOperator: String,
     operator: String,
     afterOperator: String,
-    displayText: String,
     onDisplayTextChange: (String) -> Unit
 ) {
-    when (operator) {
-        "+" -> onDisplayTextChange((beforeOperator.toInt() + afterOperator.toInt()).toString())
-        "-" -> onDisplayTextChange((beforeOperator.toInt() + afterOperator.toInt()).toString())
-        "*" -> onDisplayTextChange((beforeOperator.toInt() + afterOperator.toInt()).toString())
-        "/" -> onDisplayTextChange((beforeOperator.toInt() + afterOperator.toInt()).toString())
-        "%" -> onDisplayTextChange((beforeOperator.toInt() + afterOperator.toInt()).toString())
+    val result = when (operator) {
+        "+" -> (beforeOperator.toInt() + afterOperator.toInt()).toString()
+        "-" -> (beforeOperator.toInt() - afterOperator.toInt()).toString()
+        "*" -> (beforeOperator.toInt() * afterOperator.toInt()).toString()
+        "/" -> (beforeOperator.toInt() / afterOperator.toInt()).toString()
+        "%" -> (beforeOperator.toInt() % afterOperator.toInt()).toString()
+        else -> "0"
     }
+    onDisplayTextChange(result)
 }
 
 fun manageClear(
-    button: String,
     beforeOperator: String,
     onChangeBeforeOperator: (String) -> Unit,
     operator: String,
