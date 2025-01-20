@@ -54,18 +54,19 @@ fun calculatorButtonGrid(): List<List<String>> {
 @Composable
 fun layoutButtonGrid() {
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         val calculatorRow = calculatorButtonGrid()
 
         calculatorRow.forEach { row ->
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 row.forEach { button ->
                     Button(
                         onClick = { null },
+                        //distributes space proportionally within a Row or Column.
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(button)
